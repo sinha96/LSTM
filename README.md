@@ -198,6 +198,23 @@ We are using keras framework to demonstrate how to build LSTM sequential network
             model.add(Dense(1, activation='sigmoid')) 
             model.compile(loss='binary_crossentropy',optimizer='adam', metrics=['accuracy']) 
             model.summary()
+            
+            
+      output: 
+      
+      _________________________________________________________________
+      Layer (type)                 Output Shape              Param #   
+      =================================================================
+      embedding_1 (Embedding)      (None, 500, 32)           160000    
+      _________________________________________________________________
+      lstm_1 (LSTM)                (None, 100)               53200     
+      _________________________________________________________________
+      dense_1 (Dense)              (None, 1)                 101       
+      =================================================================
+      Total params: 213,301
+      Trainable params: 213,301
+      Non-trainable params: 0
+      _________________________________________________________________
              
 5. Training of the model
     1. Now we have to fit the data i.e X_train and Y_train into the model we have created in the step 3.
