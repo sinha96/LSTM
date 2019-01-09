@@ -90,6 +90,8 @@ The symbols used here have following meaning:
   * A quick tutorial on [LSTM](https://www.youtube.com/watch?v=9zhrxE5PQgY) 
 
 ## 5. Simple Example
+## 1. Web Trafic
+
 A simple example for lstm is [lstm.py](https://github.com/Deep-Mind-Hive/LSTM/blob/master/lstm.py)
 We are using keras framework to demonstrate how to build LSTM sequential network
 
@@ -132,8 +134,130 @@ We are using keras framework to demonstrate how to build LSTM sequential network
 
         score = model.evaluate(x_test, y_test, batch_size=16)
 
+### 2. IMDB sentiment dataset
 
+1. First we have to import all the dependencies 
+    
+        import keras
+        from keras import backend as k
+        from keras.datasets import imdb
+        from keras.layers import LSTM, Embedding, Activation, Dense
+        from keras.models import Sequential
+        
+2. Define your maximum word length for one input and download the dataset
 
+       top_words = 5000
+       (X_train, y_train), (X_test, y_test) = imdb.load_data(num_words = top_words)
+
+3. Data preprocessing
+
+  1. All the Sentimens are not of same length some can be of 20 words some 1 and may be some can containe 300 it varies according to the veiwers. So we have to pad the input to make them od=f equal lentgh.
+         
+          from keras.preprocessing import sequence 
+          max_review_length = 500 
+          X_train = sequence.pad_sequences(X_train, maxlen=max_review_length) 
+          X_test = sequence.pad_sequences(X_test, maxlen=max_review_length) 
+
+      
+      output will be like :
+                
+                array([[   0,    0,    0, ...,   14,    6,  717],
+                 [   0,    0,    0, ...,  125,    4, 3077],
+                 [  33,    6,   58, ...,    9,   57,  975],
+                 ...,
+                 [   0,    0,    0, ...,   21,  846,    2],
+                 [   0,    0,    0, ..., 2302,    7,  470],
+                 [   0,    0,    0, ...,   34, 2005, 2643]])
+                 
+                 
+  2. Now to extract the sentiment from the above output to natural language so that a normal human ca read it we have to make a dictionary
+  
+          word_to_id = keras.datasets.imdb.get_word_index()
+          word_to_id = {k:(v+1) for k,v in word_to_id.items()}
+          word_to_id["<PAD>"] = 0
+          word_to_id["<START>"] = 1
+          word_to_id["<UNK>"] = 2
+          id_to_word = {value:key for key,value in word_to_id.items()}
+          print(' '.join(id_to_word[id] for id in X_train[0] ))
+          
+      output:
+      
+    <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <PAD> <START> was not for it's self joke professional disappointment see already pretending their staged a every so found of his movies it's third plot good episodes <UNK> in who guess wasn't of doesn't a again plot find <UNK> poor let her a again vegas trouble with fight like that oh a big good for to watching essentially but was not a fat centers turn a not well how this for it's self like bad as that natural a not with starts with this for david movie <UNK> of only moments this br special br films of a sell <UNK> for guess their childish an a man this for like musical of his ever more so while there his feelings an to not this role be get when of was others for people <UNK> br a character love <UNK> as found a <UNK> is turner of upon so well it's self fine have early seeing if is a <UNK> social that watch him a sex as plays could by suffering time have through to long <UNK> movie a music not on scene fine have guess of i'm all <UNK> movie more so be whole its his watch a music see for like blue him this for everything of for sits never characters by as for <UNK> but down by
+
+4. Building model
+    1. Create the instance of the sequential model
+    2. On that instance add a Embedding layer with maximum vocab size and dimention of output.
+    3. Now add a layer of LSTM with 100 units.
+    4. For output we have to add a Dense layer with one node.
+    5. At last we have to compile the model for taining with loss function as binary cross entropy, optimizer as adam and metric as acuuracy.
+    
+            embedding_vector_length = 32 
+            model = Sequential() 
+            model.add(Embedding(top_words, embedding_vector_length, input_length=max_review_length)) 
+            model.add(LSTM(100)) 
+            model.add(Dense(1, activation='sigmoid')) 
+            model.compile(loss='binary_crossentropy',optimizer='adam', metrics=['accuracy']) 
+            model.summary()
+             
+5. Training of the model
+    1. Now we have to fit the data i.e X_train and Y_train into the model we have created in the step 3.
+    2. We can't pass all the input at once, it will take long time to train the model so we divide the input into batches and then train the model by passing one batch at a time. It increases the efficiency of the model.
+    3. Batch size difines that how much input data in divided into each batch.
+    4. An epoch is a measure of the number of times all of the training vectors are used once to update the weights.For batch training all of the training samples pass through the learning algorithm simultaneously in one epoch before weights are updated.
+      
+            model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=2, batch_size=128) 
+     output: 
+     
+             Train on 25000 samples, validate on 25000 samples
+        Epoch 1/2
+        25000/25000 [==============================] - 210s 8ms/step - loss: 0.5347 - acc: 0.7306 - val_loss: 0.3227 - val_acc: 0.8622
+        Epoch 2/2
+        25000/25000 [==============================] - 203s 8ms/step - loss: 0.2980 - acc: 0.8796 - val_loss: 0.3217 - val_acc: 0.8639
+        <keras.callbacks.History at 0x12d03d61d30>
+
+5. At last we have to evaluate the model perfomance by camparing the predicted value and actual value, with same batch size.
+
+        scores = model.evaluate(X_test, y_test, verbose=0)
+        print("Accuracy: %.2f%%" % (scores[1]*100))
+        print("loss: {}".format((scores[0])))
+        
+     output:
+     
+         Accuracy: 86.39%
+         loss: 0.3216540405845642
+        
+6. Checking the model :
+
+  1. Take the input from the user.
+  2. There are two ways to encode the input: 
+    1. First is the inbuilt funtion i.e one_hot encoding
+    2. sencond map all the word to id (integer) using dictionaries.
+    
+  3. Then pass the encoded list of integer to the model via model.predict funtion.
+  
+  
+          import numpy as np
+          bad = "professional disappointment"
+          good = "i really liked the movie and had fun"
+          for review in [good,bad]:
+              tmp = []
+              for word in review.split(" "):
+                  tmp.append(word_to_id[word])
+              tmp_padded = sequence.pad_sequences([tmp], maxlen=max_review_length) 
+              print("%s. Sentiment: %s" % (review,model.predict(np.array([tmp_padded][0]))[0][0]))
+              
+              
+      output : 
+      
+          i really liked the movie and had fun. Sentiment: 0.6231231
+          professional disappointment. Sentiment: 0.37993282
+          
+          
+7. At last save the model
+
+        model.save('imdb.h5')
+        
+        
 ## 6. Sample, Timesteps and Features 
 | Name | Definetion |
 | :--- | :--- |
